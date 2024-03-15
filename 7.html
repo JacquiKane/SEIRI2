@@ -1,0 +1,83 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>jQuery UI Dialog functionality</title>
+    <link
+      href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+    <!-- CSS -->
+    <style>
+      .ui-widget-header,
+      .ui-state-default,
+      ui-button {
+        background: hsl(64, 98%, 51%);
+        border: 1px solid #320dec;
+        color: #3b0ecd;
+        font-weight: bold;
+      }
+      .ui-dialog {
+        background: palegoldenrod;
+      }
+    </style>
+
+    <!-- Javascript -->
+    <script>
+      let termsDictionary = {
+        term_brick_and_mortar: {
+          term: "Brick and Mortar Store",
+          def: "This describes a physical store, that customrs can walk into and experience the merchandise themselves.",
+        },
+        term_e_commerce: {
+          term: "E-Commerce",
+          def: "E-commerce describes a business entity that operates exclusively through online media, and on the internet.",
+        },
+      };
+      $(function () {
+        $("#termBox").dialog({
+          autoOpen: false,
+          hide: "puff",
+          show: "puff",
+          open: function () {
+            let key = $(this).data("id");
+            $(this).dialog({ title: termsDictionary[key].term });
+            $(this).html(termsDictionary[key].def);
+          },
+        });
+        $(".keyTerm").click(function (e) {
+          $("#termBox")
+            .data("id", e.currentTarget.id)
+            .dialog("open", e.currentTarget.id);
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- HTML -->
+    <div id="termBox" title="IB Business">This my first jQuery UI Dialog!</div>
+    <!-- Trigger/Open The Modal -->
+    <p>
+      IB Business is a course designed by a conglomerate of successful Business
+      entities, for international students. The idea is that this course will
+      prepare students to enter business wth a base lb=vel of understanding of
+      techniques and entities in commerce.
+    </p>
+    <p>
+      For example, a
+      <span id="term_brick_and_mortar" class="keyTerm"
+        ><a href="#">Brick and Mortar store </a></span
+      >, versus an
+      <span id="term_e_commerce" class="keyTerm"
+        ><a href="#">e-commerce</a> entity.</span
+      >
+    </p>
+    <span class="keyTerm" id="term_e_commerce">Open Dialog</span>
+  </body>
+</html>
