@@ -5,12 +5,17 @@
   <head>
     <meta charset="utf-8" />
     <title>jQuery UI Dialog functionality</title>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- jQuery UI ... gives dialog standard styles and buttons -->
     <link
-      href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+      href="https://code.jquery.com/ui/1.13.0/themes/ui-lightness/jquery-ui.css"
       rel="stylesheet"
     />
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
     <!-- CSS -->
     <style>
@@ -25,59 +30,93 @@
       .ui-dialog {
         background: palegoldenrod;
       }
+      .modalPos {
+        position: absolute;
+        top: 15%;
+        left: 15%;
+      }
     </style>
-
-    <!-- Javascript -->
-    <script>
-      let termsDictionary = {
-        term_brick_and_mortar: {
-          term: "Brick and Mortar Store",
-          def: "This describes a physical store, that customrs can walk into and experience the merchandise themselves.",
-        },
-        term_e_commerce: {
-          term: "E-Commerce",
-          def: "E-commerce describes a business entity that operates exclusively through online media, and on the internet.",
-        },
-      };
-      $(function () {
-        $("#termBox").dialog({
-          autoOpen: false,
-          hide: "puff",
-          show: "puff",
-          open: function () {
-            let key = $(this).data("id");
-            $(this).dialog({ title: termsDictionary[key].term });
-            $(this).html(termsDictionary[key].def);
-          },
-        });
-        $(".keyTerm").click(function (e) {
-          $("#termBox")
-            .data("id", e.currentTarget.id)
-            .dialog("open", e.currentTarget.id);
-        });
-      });
-    </script>
   </head>
 
   <body>
-    <!-- HTML -->
-    <div id="termBox" title="IB Business">This my first jQuery UI Dialog!</div>
-    <!-- Trigger/Open The Modal -->
+    <!-- HTML part of dialog for terms/defs  -->
+    <!-- This is an outline of the dialog used for terms and definitions, initially hidden -->
+    <div id="termBox" title="IB Business">Key term content here!</div>
+    <!-- Trigger/Open The Modal when the key term is clicked -->
     <p>
       IB Business is a course designed by a conglomerate of successful Business
       entities, for international students. The idea is that this course will
-      prepare students to enter business wth a base lb=vel of understanding of
+      prepare students to enter business with a base level of understanding of
       techniques and entities in commerce.
     </p>
     <p>
       For example, a
-      <span id="term_brick_and_mortar" class="keyTerm"
+      <!-- Note, each term is surrounded by span, and the a tag. The id is unique, and in the form of 
+      id_whatever the term is, and class of keyTerm. -->
+      <span id="id_brick_and_mortar" class="keyTerm"
         ><a href="#">Brick and Mortar store </a></span
       >, versus an
-      <span id="term_e_commerce" class="keyTerm"
+      <span id="id_e_commerce" class="keyTerm"
         ><a href="#">e-commerce</a> entity.</span
       >
     </p>
-    <span class="keyTerm" id="term_e_commerce">Open Dialog</span>
   </body>
 </html>
+
+<!-- Javascript -->
+<script>
+  // A dictionary is a data structure that is composed of key/value pairs, set up as follows.
+  // Use { .. } to delineate the dictionary, and an additional {..} for the definition part here,
+  // because this definition part is an object composed of the 'English' term and definition.
+  // term_brick_and_mortar etc is the key.
+  let termsDictionary = {
+    id_brick_and_mortar: {
+      term: "Brick and Mortar Store",
+      def: "This describes a physical store, that customers can walk into and experience the merchandise themselves.",
+    },
+    id_e_commerce: {
+      term: "E-Commerce",
+      def: "E-commerce describes a business entity that operates exclusively through online media, and on the internet.",
+    },
+    id_operations_management: {
+      term: "Operations Management",
+      def: "Operations management is the administration of business structure, practices, and processes to enhance efficiency and maximize profit. It refers to the management of functions that a business needs to run effectively day-to-day. Examples:nOverseeing multiple departments and providing goals,Overseeing and streamlining processes, Balancing revenue and costs, Developing strategic plans, Production, logistics, and supply chain",
+    },
+  };
+
+  const setUpTermsBox = () => {
+    $("#termBox").dialog({
+      open: function () {
+        console.log("OPEN");
+        console.log($(this).data);
+        let key = $(this).data("id"); // the event object has been passed to the dialog prior to opening
+        console.log("opening dialog after pressing button:" + key); // Check value!
+        $(this).dialog({ title: termsDictionary[key].term }); // Give title based on id
+        $(this).html(termsDictionary[key].def);
+      },
+      autoOpen: false,
+      hide: "puff",
+      show: "puff",
+      closeOnEscape: true,
+      buttons: [
+        {
+          text: "Dismiss Term Information",
+          class: "cancelButtonClass",
+          width: "100%",
+          click: function () {
+            // Cancel code here
+            $(this).dialog("close");
+          },
+        },
+      ],
+    });
+    $(".keyTerm").click(function (e) {
+      console.log(e.currentTarget);
+      $("#termBox").data(e.currentTarget); // The important part .data() method, for passing into the modal
+      $("#termBox").dialog("open");
+      return false;
+    });
+  };
+
+  $(document).ready(setUpTermsBox);
+</script>
